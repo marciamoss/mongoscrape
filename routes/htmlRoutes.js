@@ -1,22 +1,29 @@
 const router = require('express').Router();
-const Mongoscrape = require('../models/mongoscrape');
-
-module.exports = (mongoose) => {
-    const scrapedData=Mongoscrape.db.collections.news;
-
+module.exports = (db) => {
     router.get('/', function(req, res) {
         res.render("index");
     });
-    
-    
     router.get('/api/news', function(req, res) {
-        scrapedData.find({},function(err, news) {
-            let scrape=[];
-            news.forEach(function(element){
-                scrape.push(element);
-            },function(){ res.send(scrape);}); 
+        db.News.find({})
+        .then(dbNews => { 
+            // If we were able to successfully find Articles, send them back to the client
+            res.json(dbNews);
+        })
+        .catch(err => {
+            // If an error occurred, send it to the client
+            res.json(err);
         });
     });
-
+    router.get('/api/savednews', function(req, res) {
+        db.News.find({ saved: true })
+        .then(dbSavedNews => { 
+            // If we were able to successfully find Articles, send them back to the client
+            res.json(dbSavedNews);
+        })
+        .catch(err => {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
+    });
     return router;
 };

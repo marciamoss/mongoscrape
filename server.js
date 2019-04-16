@@ -1,51 +1,47 @@
-// Dependencies
 const express = require("express");
+const logger = require("morgan");
+const mongoose = require("mongoose");
+
+// Our scraping tools
+// Axios is a promised-based http library, similar to jQuery's Ajax method
+// It works on the client and on the server
+const axios = require("axios");
+const cheerio = require("cheerio");
+
+// Require all models
+const db = require("./models");
+
+const PORT = 3003;
 
 // Initialize Express
 const app = express();
-// Serve static content for the app from the "public" directory in the application directory.
-app.use(express.static("public"));
 
-// Parse application body as JSON
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Configure middleware
 
 // Handlebars
 const exphbs = require('express-handlebars');
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
-// Set up mongoose connection
-const mongoose = require('mongoose');
-// Require axios and cheerio. This makes the scraping possible
-const axios = require("axios");
-const cheerio = require("cheerio");
 
-// Database configuration with mongoose
-var databaseUri = 'mongodb://localhost/newsscraper';
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI);
-}else {
-  mongoose.connect(databaseUri);
-}
-// end of db config
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Parse request body as JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+// Make public a static folder
+app.use(express.static("public"));
 
-var db = mongoose.connection;
+// Connect to the Mongo DB
+mongoose.connect('mongodb://localhost/newsscraper', { useNewUrlParser: true });
 
-db.on("error", error => {
-  console.log("Mongoose Error:", error);
-});
-db.once("open", error => {
-  console.log("Mongoose connection successful.");
-});
-
-app.use(require('./routes/htmlRoutes')(mongoose));
 // Import routes and give the server access to them.
+app.use(require('./routes/htmlRoutes')(db));
 const routes = require("./controllers/mongoscrapeController.js");
 
 app.use(routes);
 
-// Listen on port 3000
-app.listen(3000, () => {
-  console.log("App running on port 3000!");
+// Start the server
+app.listen(PORT, () => {
+  console.log(`App running on port ${PORT}!`);
 });

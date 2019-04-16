@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let newsSchema = new Schema({
+const NewsSchema = new Schema({
     headline: {type: String, required: true, unique: true },
     summary: {type: String, required: true},
     url: {type: String, required: true, unique: true},
+    saved: {type: Boolean, default: false}
 });
 
-// Export the model
-module.exports = mongoose.model('News', newsSchema);
+// This creates our model from the above schema, using mongoose's model method
+const News = mongoose.model('News', NewsSchema);
+
+// Export the Article model
+module.exports = News;

@@ -2,9 +2,10 @@ const express = require("express");
 
 const router = express.Router();
 
-const Mongoscrape = require('../models/mongoscrape');
+// const Mongoscrape = require('../models/mongoscrape');
+const db = require("../models");
 
-const scrapedData=Mongoscrape.collection;
+// const scrapedData=Mongoscrape.collection;
 
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -27,10 +28,11 @@ router.post("/", (req, res) => {
           // If this found element had both a title and a link
           if (url && headline && summary) {
             // Insert the data in the scrapedData db
-            scrapedData.insert({
+            db.News.create({
               headline,
               url,
-              summary
+              summary,
+              saved: false
             },
             (err, inserted) => {
               if (err) {
@@ -39,11 +41,19 @@ router.post("/", (req, res) => {
               }
               else {
                 // Otherwise, log the inserted data
-                //console.log(inserted);                
+                //console.log(inserted);            
               }
             });
           }
         });
+      });
+    }
+
+    if(req.body.save==='Yes'){
+      var id=req.body.articleid;
+      db.News.findOneAndUpdate({ _id: id }, { saved: true })
+      .then(update => {
+        console.log("update "+id);
       });
     }
 });
