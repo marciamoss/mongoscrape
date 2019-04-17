@@ -75,6 +75,32 @@ $(function() {
                             $('#savemsg').modal('show');
                         });
                     }
+                    else if(newsapi==="/api/savednews"){                       
+                        $('.addNotes').unbind().click(function(event) {
+                            event.preventDefault();
+                            let uid=$(this).attr("data-id");
+                            $('#add-notes').modal('show');
+                            $('#savethisnote').unbind().click(function(event) {
+                                event.preventDefault();
+                                let notes=$(".thoughts").val().trim();
+                                $(".thoughts").val("");
+                                $.ajax({
+                                    type: "POST",
+                                    dataType: "json",
+                                    url: "/",
+                                    data: {
+                                      addnote: 'Yes',
+                                      uid,
+                                      notes
+                                    }
+                                  })
+                                  // If that API call succeeds, add the title and a delete button for the note to the page
+                                .then(function(data) {  
+                                });
+                                
+                            });
+                        });
+                    }
                 }
             }else{
                 $("#scrapenews").html("<p id='bare'>mongo scraper</p>");

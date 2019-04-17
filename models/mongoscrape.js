@@ -5,7 +5,8 @@ const NewsSchema = new Schema({
     headline: {type: String, required: true, unique: true },
     summary: {type: String, required: true},
     url: {type: String, required: true, unique: true},
-    saved: {type: Boolean, default: false}
+    saved: {type: Boolean, default: false},
+    notes: {type: String}
 });
 
 // This creates our model from the above schema, using mongoose's model method

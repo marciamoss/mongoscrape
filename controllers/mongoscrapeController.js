@@ -32,7 +32,8 @@ router.post("/", (req, res) => {
               headline,
               url,
               summary,
-              saved: false
+              saved: false,
+              notes: ""
             },
             (err, inserted) => {
               if (err) {
@@ -55,6 +56,16 @@ router.post("/", (req, res) => {
       .then(update => {
         console.log("update "+id);
       });
+    }
+
+    if(req.body.addnote==='Yes'){
+      console.log("testing");
+      console.log(req.body);
+      db.News.findOneAndUpdate({ _id: req.body.uid }, { notes: req.body.notes })
+      .then(update => {
+        console.log("updated "+req.body.uid);
+      });
+      
     }
 });
 
