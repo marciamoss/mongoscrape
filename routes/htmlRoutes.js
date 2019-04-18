@@ -4,7 +4,7 @@ module.exports = (db) => {
         res.render("index");
     });
     router.get('/api/news', function(req, res) {
-        db.News.find({})
+        db.News.find({saved: false})
         .then(dbNews => { 
             // If we were able to successfully find Articles, send them back to the client
             res.json(dbNews);
@@ -16,14 +16,17 @@ module.exports = (db) => {
     });
     router.get('/api/savednews', function(req, res) {
         db.News.find({ saved: true })
-        .then(dbSavedNews => { 
-            // If we were able to successfully find Articles, send them back to the client
-            res.json(dbSavedNews);
+        // Specify that we want to populate the retrieved saved news with any associated notes
+        .populate("notes")
+        .then(dbSavedNews => {
+          // If any saved news are found, send them to the client with any associated notes
+          res.json(dbSavedNews);
         })
         .catch(err => {
-            // If an error occurred, send it to the client
-            res.json(err);
+          // If an error occurs, send it back to the client
+          res.json(err);
         });
     });
+
     return router;
 };

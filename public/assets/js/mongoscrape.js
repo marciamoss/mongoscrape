@@ -4,7 +4,7 @@ $(function() {
     
     $('#display').on('click', function (event) {
         event.preventDefault();
-        displaynews("/api/news")
+        displaynews("/api/news");
     });  
     
     $('#scrape').on('click', function (event) {
@@ -73,30 +73,43 @@ $(function() {
                             .then(function(data) {  
                             });
                             $('#savemsg').modal('show');
+                            displaynews("/api/news");
                         });
                     }
                     else if(newsapi==="/api/savednews"){                       
                         $('.addNotes').unbind().click(function(event) {
                             event.preventDefault();
+                            $("#allnotes").empty();
                             let uid=$(this).attr("data-id");
+                            for(var i=0;i<data.length;i++){
+                                if(data[i]._id===uid){
+                                    console.log(data[i].notes);
+                                    for(var j=0;j<data[i].notes.length;j++){
+                                        $("#allnotes").prepend(`<li>${data[i].notes[j].usernote}<span class="delete">X</span></li`);
+                                    }
+                                }  
+                            }
                             $('#add-notes').modal('show');
                             $('#savethisnote').unbind().click(function(event) {
                                 event.preventDefault();
-                                let notes=$(".thoughts").val().trim();
+                                let usernote=$(".thoughts").val().trim();
                                 $(".thoughts").val("");
-                                $.ajax({
-                                    type: "POST",
-                                    dataType: "json",
-                                    url: "/",
-                                    data: {
-                                      addnote: 'Yes',
-                                      uid,
-                                      notes
-                                    }
-                                  })
-                                  // If that API call succeeds, add the title and a delete button for the note to the page
-                                .then(function(data) {  
-                                });
+                                if(usernote !== ""){
+                                    $("#allnotes").prepend(`<li>${usernote}<span class="delete">X</span></li`);
+                                    $.ajax({
+                                        type: "POST",
+                                        dataType: "json",
+                                        url: "/",
+                                        data: {
+                                        addnote: 'Yes',
+                                        uid,
+                                        usernote
+                                        }
+                                    })
+                                    // If that API call succeeds, add the title and a delete button for the note to the page
+                                    .then(function(data) {  
+                                    });
+                                }
                                 
                             });
                         });

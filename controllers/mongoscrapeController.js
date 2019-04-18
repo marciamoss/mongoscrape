@@ -32,8 +32,7 @@ router.post("/", (req, res) => {
               headline,
               url,
               summary,
-              saved: false,
-              notes: ""
+              saved: false
             },
             (err, inserted) => {
               if (err) {
@@ -59,11 +58,20 @@ router.post("/", (req, res) => {
     }
 
     if(req.body.addnote==='Yes'){
-      console.log("testing");
-      console.log(req.body);
-      db.News.findOneAndUpdate({ _id: req.body.uid }, { notes: req.body.notes })
-      .then(update => {
-        console.log("updated "+req.body.uid);
+      db.Note.create({usernote:req.body.usernote, news: req.body.uid })
+      .then(dbNote => {
+        // If a Book was created successfully, find one library (there's only one) and push the new Book's _id to the Library's `books` array
+        // { new: true } tells the query that we want it to return the updated Library -- it returns the original by default
+        // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+        return db.News.findOneAndUpdate({ _id: req.body.uid }, { $push: { notes: dbNote._id } });
+      })
+      .then(dbNews => {
+        // If the Library was updated successfully, send it back to the client
+        res.json(dbNews);
+      })
+      .catch(err => {
+        // If an error occurs, send it back to the client
+        res.json(err);
       });
       
     }
