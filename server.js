@@ -1,10 +1,6 @@
 const express = require("express");
 const logger = require("morgan");
 const mongoose = require("mongoose");
-
-// Our scraping tools
-// Axios is a promised-based http library, similar to jQuery's Ajax method
-// It works on the client and on the server
 const axios = require("axios");
 const cheerio = require("cheerio");
 
@@ -37,6 +33,7 @@ mongoose.connect('mongodb://localhost/newsscraper', { useNewUrlParser: true });
 
 // Import routes and give the server access to them.
 app.use(require('./routes/htmlRoutes')(db));
+
 const routes = require("./controllers/mongoscrapeController.js");
 
 app.use(routes);

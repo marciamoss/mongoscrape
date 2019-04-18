@@ -1,5 +1,4 @@
 $(function() {
-
     $("#scrapenews").html("<p id='bare'>mongo scraper</p>");
     
     $('#display').on('click', function (event) {
@@ -20,6 +19,7 @@ $(function() {
           // If that API call succeeds, add the title and a delete button for the note to the page
         .then(function(data) {  
         });
+        displaynews("/api/news");
         $('#confirm').modal('show');
  
     });
@@ -69,7 +69,6 @@ $(function() {
                                 articleid: articleid
                                 }
                             })
-                            // If that API call succeeds, add the title and a delete button for the note to the page
                             .then(function(data) {  
                             });
                             $('#savemsg').modal('show');
@@ -79,23 +78,56 @@ $(function() {
                     else if(newsapi==="/api/savednews"){                       
                         $('.addNotes').unbind().click(function(event) {
                             event.preventDefault();
-                            $("#allnotes").empty();
                             let uid=$(this).attr("data-id");
-                            for(var i=0;i<data.length;i++){
-                                if(data[i]._id===uid){
-                                    console.log(data[i].notes);
-                                    for(var j=0;j<data[i].notes.length;j++){
-                                        $("#allnotes").prepend(`<li>${data[i].notes[j].usernote}<span class="delete">X</span></li`);
-                                    }
-                                }  
+                            $("#allnotes").empty();
+                            function displaynotes(){
+                                for(var i=0;i<data.length;i++){
+                                    if(data[i]._id===uid){
+                                        for(var j=0;j<data[i].notes.length;j++){
+                                            $("#allnotes").prepend(`<li>${data[i].notes[j].usernote}<span class="delete">X</span></li`);
+                                        }
+                                    }  
+                                }
                             }
-                            $('#add-notes').modal('show');
+                            displaynotes();
+                            $('#add-notes').modal('show'); 
+                            // delete note
+                            $('.delete').unbind().click(function(event) {
+                                let note, noteid;
+                                note= $(this).parent().text();
+                                note=note.substring(0,((note.length)-1));
+                                for(var i=0;i<data.length;i++){
+                                    if(data[i]._id===uid){
+                                        for(var j=0;j<data[i].notes.length;j++){
+                                            if(data[i].notes[j].usernote===note){
+                                                noteid=data[i].notes[j]._id;
+                                            }
+                                        }
+                                    }  
+                                }
+                                $(this).parent().empty();
+                                $.ajax({
+                                    type: "POST",
+                                    dataType: "json",
+                                    url: "/",
+                                    data: {
+                                    deletenote: 'Yes',
+                                    nid: noteid,
+                                    usernote: note
+                                    }
+                                })
+                                .then(function(data) {  
+                                    displaynews("/api/savednews");
+                                });
+                                
+                            });
+                            
+                            //////////////////
                             $('#savethisnote').unbind().click(function(event) {
                                 event.preventDefault();
                                 let usernote=$(".thoughts").val().trim();
                                 $(".thoughts").val("");
                                 if(usernote !== ""){
-                                    $("#allnotes").prepend(`<li>${usernote}<span class="delete">X</span></li`);
                                     $.ajax({
                                         type: "POST",
                                         dataType: "json",
@@ -106,11 +138,11 @@ $(function() {
                                         usernote
                                         }
                                     })
-                                    // If that API call succeeds, add the title and a delete button for the note to the page
                                     .then(function(data) {  
+                                        displaynews("/api/savednews");
+                                        $("#allnotes").prepend(`<li>${usernote}<span class="delete">X</span></li`);
                                     });
-                                }
-                                
+                                }   
                             });
                         });
                     }
