@@ -11,38 +11,53 @@ const cheerio = require("cheerio");
 router.post("/", (req, res) => {
 
     if(req.body.scrape==='Yes'){
-      // Make a request via axios for the news section of `ycombinator`
-      axios.get("https://www.nytimes.com/section/us").then(response => {  
-        // Load the html body from axios into cheerio
-        const $ = cheerio.load(response.data);
-        // For each element in latest news
-        $(".css-13mho3u").children("ol").children("li").each((j, element2) => {
-          // Save the text and href of each link enclosed in the current element
-          const url = $(element2).children("div").children("div").children("a").attr("href");
-          const headline = $(element2).children("div").children("div").children("a").children("h2").text();
-          const summary = $(element2).children("div").children("div").children("a").children("p").text();
+      let newssections=[];
+      //get all the sections from NYTIMES
+      axios.get("https://www.nytimes.com").then(sections => {
+        const $ = cheerio.load(sections.data);
+        
+        $(".css-1d8a290").children("ul").children("li").children("a").each((j, sectionelement) => {
+          const sectionsNYT = $(sectionelement).attr("href");
+          newssections.push(sectionsNYT);
+          getnews(sectionsNYT);
           
-          // If this found element had both a title and a link
-          if (url && headline && summary) {
-            // Insert the data in the scrapedData db
-            db.News.create({
-              headline,
-              url,
-              summary,
-              saved: false
-            },
-            (err, inserted) => {
-              if (err) {
-                // Log the error if one is encountered during the query
-                console.log(err);
-              }
-              else {
-                // Otherwise, log the inserted data
-                //console.log(inserted);            
+        });
+        //console.log(newssections);
+        // Make a request via axios for the news section 
+        function getnews(sectionsNYT){
+          axios.get(sectionsNYT).then(response => {  
+            // Load the html body from axios into cheerio
+            const $ = cheerio.load(response.data);
+            // For each element in latest news
+            $(".css-13mho3u").children("ol").children("li").each((j, element2) => {
+              // Save the text and href of each link enclosed in the current element
+              const url = $(element2).children("div").children("div").children("a").attr("href");
+              const headline = $(element2).children("div").children("div").children("a").children("h2").text();
+              const summary = $(element2).children("div").children("div").children("a").children("p").text();
+              
+              // If this found element had both a title and a link
+              if (url && headline && summary) {
+                // Insert the data in the scrapedData db
+                db.News.create({
+                  headline,
+                  url,
+                  summary,
+                  saved: false
+                },
+                (err, inserted) => {
+                  if (err) {
+                    // Log the error if one is encountered during the query
+                    console.log(err.errmsg);
+                  }
+                  else {
+                    // Otherwise, log the inserted data
+                    //console.log(inserted);            
+                  }
+                });
               }
             });
-          }
-        });
+          });
+        }
       });
     }
 

@@ -18,9 +18,16 @@ $(function() {
         $('#confirm').modal('show');
         $('#scrapecomplete').on('click', function (event) {
             window.location.href = '/';
-        });  
+        }); 
+         
  
     });
+
+    $('#display').on('click', function (event) {
+        event.preventDefault();  
+        window.location.href = '/';
+    });
+
 
     $('.saveArticle').unbind().click(function(event) {
         event.preventDefault();
