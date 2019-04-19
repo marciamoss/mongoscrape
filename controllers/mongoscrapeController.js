@@ -47,7 +47,7 @@ router.post("/", (req, res) => {
     }
 
     if(req.body.save==='Yes'){
-      var id=req.body.articleid;
+      let id=req.body.articleid;
       db.News.findOneAndUpdate({ _id: id }, { saved: true })
       .then(update => {
         console.log("update "+id);
@@ -75,7 +75,29 @@ router.post("/", (req, res) => {
       })
         .catch(err => {
           res.json(err);
-      });       
+      });  
+      //when note is deleted remove associated note id in news
+      db.News.findOneAndUpdate({ _id: req.body.uid}, { $pull: { notes: { $in: [req.body.nid] } } },{ multi: true })
+      .then(update => {
+        console.log("update "+id);
+      });
+    }
+
+    if(req.body.deletesaved==='Yes'){
+      let id=req.body.uid;
+      //when article in unsaved remove all note associations
+      db.News.findOneAndUpdate({ _id: id}, { saved: false, $pull: { notes: { $nin: [] } } },{ multi: true })
+      .then(update => {
+        console.log("update "+id);
+      });
+    }
+
+    if(req.body.clearallsaved==='Yes'){
+      //when article in unsaved remove all note associations
+      db.News.update({ }, { saved: false, $pull: { notes: { $nin: [] } } },{ multi: true })
+      .then(update => {
+        
+      });
     }
 
 });

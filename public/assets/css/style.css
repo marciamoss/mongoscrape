@@ -17,7 +17,7 @@ body{
     text-align: right;
     font-weight: bold;
   }
-#sc{
+.sc{
     text-align: center;
     font-weight: bold;
     font-size: 25px;

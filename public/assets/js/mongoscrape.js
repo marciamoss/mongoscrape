@@ -114,4 +114,34 @@ $(function() {
             }
         });   
     });
+
+    $('.deletesaved').on('click', function (event) {
+        let uid=$(this).attr("data-id");
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/",
+            data: {
+            deletesaved: 'Yes',
+            uid: uid
+            }
+        })
+        .then(function(data) { 
+            window.location.href = '/savednews';
+        });
+    });
+
+    $('#clear').on('click', function (event) {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/",
+            data: {
+            clearallsaved: 'Yes',
+            }
+        })
+        .then(function(data) { 
+            window.location.href = '/savednews';
+        });
+    });
 });

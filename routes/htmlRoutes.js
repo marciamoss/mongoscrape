@@ -13,7 +13,6 @@ module.exports = (db) => {
           res.json(err);
         });
     });
-
     router.get('/savednews', function(req, res) {
       db.News.find({ saved:true })
       // Specify that we want to populate the retrieved saved news with any associated notes
@@ -27,7 +26,6 @@ module.exports = (db) => {
         res.json(err);
       });
     });
-
     router.get('/api/news', function(req, res) {
         db.News.find({saved: false})
         .then(dbNews => { 
@@ -52,6 +50,5 @@ module.exports = (db) => {
           res.json(err);
         });
     });
-
     return router;
 };
