@@ -1,14 +1,15 @@
   {{> nav/nav-block }}
   
-  {{#if dbNews}}
-    {{#each dbNews}} 
+  {{#if dbSavedNews}}
+    {{#each dbSavedNews}} 
       <div class="card bg-light mb-3" data-id={{_id}}>
         <div class="card-header">{{headline}}</div>
         <div class="card-body">
           <h5 class="card-title"><a href="https://www.nytimes.com{{url}}" target="blank">https://www.nytimes.com{{url}}</a></h5>
             <p class="card-text">{{summary}}</p>
             <form class="form-inline my-2 my-lg-0">
-              <button class="btn btn-md btn-success font-weight-bold my-2 my-sm-0 mr-2 saveArticle" data-id={{_id}}>Save Article!</button>
+              <button class="btn btn-md btn-info font-weight-bold my-2 my-sm-0 mr-2 addNotes" data-id={{_id}}>Add Notes</button>
+              <button class="btn btn-md btn-danger font-weight-bold my-2 my-sm-0 mr-2 deletesaved" data-id={{_id}}>Delete from saved</button>
             </form>
         </div>
       </div>
@@ -21,4 +22,6 @@
 
   {{> modal/save-block }}
 
+  {{> modal/addnotes-block  }}
+  
   

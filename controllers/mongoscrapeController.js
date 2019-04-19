@@ -71,12 +71,11 @@ router.post("/", (req, res) => {
     if(req.body.deletenote==='Yes'){
       db.Note.deleteOne({ _id: req.body.nid })
       .then(dbNews => {
-          console.log(dbNews);
+        res.json(dbNews);
       })
         .catch(err => {
-          console.log(err);
-      });
-        
+          res.json(err);
+      });       
     }
 
 });
