@@ -39,7 +39,7 @@ $(function() {
         });
         $('#savemsg').modal('show');
         $('#savemsgclose').on('click', function (event) {
-            window.location.href = '/';
+            window.location.href = '/displaynews';
         });  
     });
 

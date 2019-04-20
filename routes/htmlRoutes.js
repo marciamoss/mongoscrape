@@ -22,6 +22,28 @@ module.exports = (db) => {
           res.json(err);
         });
     });
+    router.get('/displaynews', function(req, res) {
+      //db.News.find({ saved:false })
+      db.News.find({saved:false, displayed:true}).sort({'date': -1}).limit(10)
+      // Specify that we want to populate the retrieved saved news with any associated notes
+      .populate("notes")
+      .then(dbNews => {
+        
+        for (var i=0;i<dbNews.length;i++){
+          console.log(dbNews[i]._id);
+          db.News.findOneAndUpdate({ _id: dbNews[i]._id }, { displayed: true })
+          .then(update => {
+            console.log("update "+dbNews[i]._id);
+          });
+        }
+        // If any saved news are found, send them to the client with any associated notes
+        res.render("displaynews",{dbNews:dbNews});
+      })
+      .catch(err => {
+        // If an error occurs, send it back to the client
+        res.json(err);
+      });
+  });
     router.get('/savednews', function(req, res) {
       db.News.find({ saved:true })
       // Specify that we want to populate the retrieved saved news with any associated notes

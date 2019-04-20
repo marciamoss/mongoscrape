@@ -1,0 +1,22 @@
+  {{> nav/nav-block }}
+  
+  {{#if dbNews}}
+    {{#each dbNews}} 
+      <div class="card bg-light mb-3" data-id={{_id}}>
+        <div class="card-header">{{headline}}</div>
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.nytimes.com{{url}}" target="blank">https://www.nytimes.com{{url}}</a></h5>
+            <p class="card-text">{{summary}}</p>
+            <form class="form-inline my-2 my-lg-0">
+              <button class="btn btn-md btn-success font-weight-bold my-2 my-sm-0 mr-2 saveArticle" data-id={{_id}}>Save Article!</button>
+            </form>
+        </div>
+      </div>
+    {{/each}} 
+  {{/if}}
+ 
+  {{> scrape/scrape-block }}
+
+  {{> modal/confirmscrape-block }}
+
+  {{> modal/save-block }}
