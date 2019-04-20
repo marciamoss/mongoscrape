@@ -5,6 +5,8 @@ const NewsSchema = new Schema({
     headline: {type: String, required: true, unique: true },
     summary: {type: String, required: true},
     url: {type: String, required: true, unique: true},
+    created_at: { type: Date, required: true, default: Date.now },
+    displayed: {type: Boolean, default: false},
     saved: {type: Boolean, default: false},
     notes: [
         {

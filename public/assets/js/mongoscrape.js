@@ -14,13 +14,7 @@ $(function() {
           // If that API call succeeds, add the title and a delete button for the note to the page
         .then(function(data) {  
         });
-        //displaynews("/api/news");
         $('#confirm').modal('show');
-        $('#scrapecomplete').on('click', function (event) {
-            window.location.href = '/';
-        }); 
-         
- 
     });
 
     $('#display').on('click', function (event) {
