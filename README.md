@@ -1,7 +1,7 @@
 # mongoscrape
 
     
-**App link** https://tranquil-tor-18800.herokuapp.com/    
+**App link** https://powerful-caverns-28906.herokuapp.com/    
 * A web app that lets users view and leave comments on the latest news scraped using Mongoose and Cheerio from https://www.nytimes.com.
 * Uses Handlebars to render the pages.
 * Allows user to scrape stories from nytimes news outlet and displays them for the user.
