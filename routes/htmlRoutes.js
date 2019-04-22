@@ -6,12 +6,22 @@ module.exports = (db) => {
         // Specify that we want to populate the retrieved saved news with any associated notes
         .populate("notes")
         .then(dbNews => {
-          
+          //delete all records, once all are displayed for fresh scrape
+          if(dbNews.length===0){
+            console.log("here");
+            db.News.deleteMany({saved:false, displayed:true})
+            .then(alldeleted => {
+            })
+            .catch(err => {
+              console.log(err);
+            }); 
+          }
           for (var i=0;i<dbNews.length;i++){
-            console.log(dbNews[i]._id);
             db.News.findOneAndUpdate({ _id: dbNews[i]._id }, { displayed: true })
             .then(update => {
-              console.log("update "+dbNews[i]._id);
+            }).catch(err => {
+              // If an error occurs, send it back to the client
+              console.log(err);
             });
           }
           // If any saved news are found, send them to the client with any associated notes
